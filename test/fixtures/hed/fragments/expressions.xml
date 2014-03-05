@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<measureDocument xmlns="urn:hl7-org:knowledgeartifact:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:vmr="urn:hl7-org:vmr:r2" xmlns:dt="urn:hl7-org:cdsdt:r2">
+
+  <externalData>
+
+    <parameter name="ParameterRefTarget">
+      <default xsi:type="StringLiteral" value="WXYZ" />
+    </parameter>
+
+    <def name="ClinicalRequest_Everything">
+      <expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Encounter" codeProperty="encounterCode"
+                  dateProperty="effectiveDateTime.low" subjectProperty="evaluatedPersonId" useValueSets="true"
+                  useSubsumption="true" scope="ED" templateId="abc" idProperty="xyz" triggerType="DataElementAdded" isInitial="false">
+        <codes xsi:type="ValueSet" authority="VSAC" id="999" version="20130614"/>
+        <dateRange xsi:type="TimestampIntervalLiteral">
+          <low value="20130101"/>
+          <high value="20140101"/>
+        </dateRange>
+        <subject xsi:type="ClinicalRequest" cardinality="Single" dataType="vmr:Patient"/>
+        <timeOffset xsi:type="IntegerLiteral" value="5" />
+      </expression>
+    </def>
+
+    <def name="ClinicalRequest_Minimal">
+      <expression xsi:type="ClinicalRequest" cardinality="Single" dataType="vmr:Patient" />
+    </def>
+
+    <def name="Count">
+      <expression xsi:type="Count" path="value">
+        <source xsi:type="Distinct">
+          <operand xsi:type="IntegerLiteral" value="1" />
+          <operand xsi:type="IntegerLiteral" value="1" />
+          <operand xsi:type="IntegerLiteral" value="2" />
+        </source>
+      </expression>
+    </def>
+
+    <def name="Distinct">
+      <expression xsi:type="Distinct">
+        <source xsi:type="Union">
+          <operand xsi:type="IntegerLiteral" value="1" />
+          <operand xsi:type="IntegerLiteral" value="1" />
+          <operand xsi:type="IntegerLiteral" value="2" />
+        </source>
+      </expression>
+    </def>
+
+    <def name="DateAdd">
+      <expression xsi:type="DateAdd">
+        <date xsi:type="Property" scope="ED" path="effectiveDateTime.high"/>
+        <granularity xsi:type="Literal" valueType="DateGranularity" value="Hour"/>
+        <numberOfPeriods xsi:type="IntegerLiteral" value="6"/>
+      </expression>
+    </def>
+
+    <def name="Divide">
+      <expression xsi:type="Divide">
+        <operand xsi:type="IntegerLiteral" value="150"/>
+        <operand xsi:type="IntegerLiteral" value="3" />
+      </expression>
+    </def>
+
+    <def name="Equal">
+      <expression xsi:type="Equal">
+        <operand xsi:type="Property" path="problemStatus"/>
+        <operand xsi:type="StringLiteral" value="Active"/>
+      </expression>
+    </def>
+
+    <def name="ExpressionRef_ExternalData">
+      <expression xsi:type="ExpressionRef" name="ExpressionRefTargetInExternalData"/>
+    </def>
+
+    <def name="ExpressionRef_Expressions">
+      <expression xsi:type="ExpressionRef" name="ExpressionRefTargetInExpressions"/>
+    </def>
+
+    <def name="ExpressionRef_MeasurePeriod">
+      <expression xsi:type="ExpressionRef" name="ExpressionRefTargetInMeasurePeriod"/>
+    </def>
+
+    <def name="ExpressionRef_MeasureSubject">
+      <expression xsi:type="ExpressionRef" name="ExpressionRefTargetInMeasureSubject"/>
+    </def>
+
+    <def name="ExpressionRef_Criterion">
+      <expression xsi:type="ExpressionRef" name="ExpressionRefTargetInCriterion"/>
+    </def>
+
+    <def name="ExpressionRef_MeasureObservation">
+      <expression xsi:type="ExpressionRef" name="ExpressionRefTargetInMeasureObservation"/>
+    </def>
+
+    <def name="ExpressionRefTargetInExternalData">
+      <expression xsi:type="StringLiteral" value="ABCD" />
+    </def>
+
+    <def name="Filter">
+      <expression xsi:type="Filter" scope="abc">
+        <source xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+          <codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.199.12.1031" version="20130614"/>
+          <subject xsi:type="ClinicalRequest" cardinality="Single" dataType="vmr:Patient"/>
+        </source>
+        <condition xsi:type="Equal">
+          <operand xsi:type="Property" path="problemStatus"/>
+          <operand xsi:type="StringLiteral" value="Active"/>
+        </condition>
+      </expression>
+    </def>
+
+    <def name="ForEach">
+      <expression xsi:type="ForEach" scope='xyz'>
+        <source xsi:type="Union">
+          <operand xsi:type="IntegerLiteral" value="11" />
+          <operand xsi:type="IntegerLiteral" value="12" />
+          <operand xsi:type="IntegerLiteral" value="13" />
+        </source>
+        <element xsi:type="Subtract">
+          <operand xsi:type="Property" path="value"/>
+          <operand xsi:type="IntegerLiteral" value="10" />
+        </element>
+      </expression>
+    </def>
+
+    <def name="GreaterOrEqual">
+      <expression xsi:type="GreaterOrEqual">
+        <operand xsi:type="IntegerLiteral" value="10" />
+        <operand xsi:type="IntegerLiteral" value="20" />
+      </expression>
+    </def>
+
+    <def name="In">
+      <expression xsi:type="In">
+        <operand xsi:type="Property" scope="ED" path="dischargeStatus"/>
+        <operand xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.666.5.1146" version="20130401"/>
+      </expression>
+    </def>
+
+    <def name="IntegerLiteral">
+      <expression xsi:type="IntegerLiteral" value="42" />
+    </def>
+
+    <!-- Used By Interval_Everything -->
+    <def name="PatientBirthDate">
+      <expression xsi:type="Property" path="BirthDate">
+        <source xsi:type="ClinicalRequest" cardinality="Single" dataType="vmr:Patient"/>
+      </expression>
+    </def>
+
+    <def name="Interval_Everything">
+      <expression xsi:type="Interval" beginOpen="true" endOpen="true">
+        <begin xsi:type="ExpressionRef" name="PatientBirthDate"/>
+        <end xsi:type="DateAdd">
+          <date xsi:type="ExpressionRef" name="PatientBirthDate"/>
+          <granularity xsi:type="Literal" valueType="DateGranularity" value="Day"/>
+          <numberOfPeriods xsi:type="IntegerLiteral" value="42"/>
+        </end>
+      </expression>
+    </def>
+
+    <def name="Interval_Minimal">
+      <expression xsi:type="Interval" />
+    </def>
+
+    <def name="LessOrEqual">
+      <expression xsi:type="LessOrEqual">
+        <operand xsi:type="IntegerLiteral" value="10" />
+        <operand xsi:type="IntegerLiteral" value="20" />
+      </expression>
+    </def>
+
+    <def name="Literal">
+      <expression xsi:type="Literal" valueType="DateGranularity" value="Hour"/>
+    </def>
+
+    <def name="Median">
+      <expression xsi:type="Median" path="value">
+        <source xsi:type="Union">
+          <operand xsi:type="IntegerLiteral" value="1" />
+          <operand xsi:type="IntegerLiteral" value="2" />
+          <operand xsi:type="IntegerLiteral" value="3" />
+        </source>
+      </expression>
+    </def>
+
+    <def name="ParameterRef">
+      <expression xsi:type="ParameterRef" name="ParameterRefTarget"/>
+    </def>
+
+    <def name="Property_Everything">
+      <expression xsi:type="Property" scope="Numbers" path="value">
+        <source xsi:type="IntegerLiteral" value="1" />
+      </expression>
+    </def>
+
+    <def name="Property_Minimal">
+      <expression xsi:type="Property" scope="ED" path="dischargeStatus"/>
+    </def>
+
+    <def name="StringLiteral">
+      <expression xsi:type="StringLiteral" value="Hello World" />
+    </def>
+
+    <def name="Subtract">
+      <expression xsi:type="Subtract">
+        <operand xsi:type="IntegerLiteral" value="20"/>
+        <operand xsi:type="IntegerLiteral" value="10" />
+      </expression>
+    </def>
+
+    <def name="TimestampIntervalLiteral_Everything">
+      <expression xsi:type="TimestampIntervalLiteral" lowClosed="true" highClosed="true">
+        <low value="20130101"/>
+        <high value="20140101"/>
+      </expression>
+    </def>
+
+    <def name="TimestampIntervalLiteral_Minimal">
+      <expression xsi:type="TimestampIntervalLiteral">
+        <low value="20130101"/>
+        <high value="20140101"/>
+      </expression>
+    </def>
+
+    <def name="ValueSet">
+      <expression xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.666.5.1146" version="20130401"/>
+    </def>
+
+  </externalData>
+
+  <expressions>
+    <def name="ExpressionRefTargetInExpressions">
+      <expression xsi:type="StringLiteral" value="EFG" />
+    </def>
+  </expressions>
+
+  <measurePeriod name="ExpressionRefTargetInMeasurePeriod">
+    <expression xsi:type="StringLiteral" value="HIJK" />
+  </measurePeriod>
+
+  <measureSubject name="ExpressionRefTargetInMeasureSubject">
+    <expression xsi:type="StringLiteral" value="LMNOP" />
+  </measureSubject>
+
+  <criteria>
+    <criterion>
+      <logic name="ExpressionRefTargetInCriterion">
+        <expression xsi:type="StringLiteral" value="QRS" />
+      </logic>
+    </criterion>
+  </criteria>
+
+  <measureObservation name="ExpressionRefTargetInMeasureObservation">
+    <expression xsi:type="StringLiteral" value="TUV" />
+  </measureObservation>
+
+</measureDocument>

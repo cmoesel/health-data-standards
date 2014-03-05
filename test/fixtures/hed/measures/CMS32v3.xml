@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<measureDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:hl7-org:knowledgeartifact:r1 ../schema/qualitymeasure/measuredocument.xsd"
+	xmlns="urn:hl7-org:knowledgeartifact:r1"  xmlns:vmr="urn:hl7-org:vmr:r2"
+	xmlns:dt="urn:hl7-org:cdsdt:r2">
+	<metadata>
+		<identifiers>
+			<identifier root="CMS32" version="3"/>
+		</identifiers>
+		<artifactType value="Measure" />
+		<schemaIdentifier root="urn:hl7-org:v3:knowledgeartifact:r1"
+			version="1" />
+		<dataModels>
+			<modelReference>
+				<description value="Virtual Medical Record model" />
+				<referencedModel value="urn:hl7-org:v3:vmr:r2" />
+			</modelReference>
+		</dataModels>
+		<title value="Median Time from ED Arrival to ED Departure for Discharged ED Patients" />
+		<relatedResources>
+			<relatedResource>
+				<relationship value="DerivedFrom" />
+				<resources>
+					<resource>
+						<title
+							value="Median Time from ED Arrival to ED Departure for Discharged ED Patients" />
+						<location
+							value="http://ushik.ahrq.gov/ViewItemDetails?&amp;system=mu&amp;itemKey=16097600" />
+					</resource>
+				</resources>
+			</relatedResource>
+		</relatedResources>
+		<!-- TODO
+		<supportingEvidence>
+			<evidence></evidence>
+		</supportingEvidence>
+		-->
+		<!-- TODO
+		<applicability>
+			<coverage>
+				<focus value=""></focus>
+			</coverage>
+		</applicability>
+		-->
+		<status value="Draft" />
+		<contributions>
+			<contribution>
+				<contributor xsi:type="Person">
+					<contacts>
+						<contact value="mailto:bryn@veracitysolutions.com"/>
+					</contacts>
+					<name use="C">
+						<dt:part value="Bryn" type="GIV"/>
+						<dt:part value="Rhodes" type="FAM"/>
+					</name>
+				</contributor>
+				<role value="Author"/>
+			</contribution>
+		</contributions>
+	</metadata>
+
+	<measureType value="ContinuousVariable"/>
+	
+	<externalData>
+	
+		<!-- Measure Period is specified as a parameter with a default to allow the measure period to be provided as data to the artifact. This parameter is then referenced as the MeasurePeriod component below. -->
+		
+		<parameter name="MeasurePeriod" parameterType="IVL_TS">
+			<default xsi:type="TimestampIntervalLiteral" highClosed="false">
+				<low value="20130101"/>
+				<high value="20140101"/>
+			</default>
+		</parameter>
+		
+		<!-- Patient is identified as the measure subject below. All other external data requests are linked to this subject via the subjectProperty. -->
+
+		<def name="Patient">
+			<expression xsi:type="ClinicalRequest" cardinality="Single" dataType="vmr:Patient"/>
+		</def>
+		
+		<def name="EncounterPerformedEmergencyDepartmentVisit">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Encounter" codeProperty="encounterCode" dateProperty="effectiveDateTime.low" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="" version="20130614"/>
+				<dateRange xsi:type="ExpressionRef" name="MeasurePeriod"/>
+			</expression>
+		</def>
+		
+		<def name="EncounterPerformedInpatient">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Encounter" codeProperty="encounterCode" dateProperty="effectiveDateTime.low" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="" version="20130614"/>
+			</expression>
+		</def>
+		
+	</externalData>
+	
+	<expressions>
+	
+	</expressions>
+	
+	<measurePeriod name="MeasurePeriod">
+		<expression xsi:type="ParameterRef" name="MeasurePeriod"/>
+	</measurePeriod>
+	
+	<measureSubject name="Subject" subjectId="id">
+		<expression xsi:type="ExpressionRef" name="Patient"/>
+	</measureSubject>
+
+	<criteria>
+
+		<criterion>
+			<logic name="InitialPopulation">
+				<expression xsi:type="ExpressionRef" name="EncounterPerformedEmergencyDepartmentVisit"/>
+			</logic>
+			<criterionRole value="InitialPopulation"/>
+		</criterion>
+
+		<criterion>
+			<logic name="MeasurePopulation">
+				<expression xsi:type="AllOf">
+					<operand xsi:type="Filter" scope="ED">
+						<source xsi:type="ExpressionRef" name="InitialPopulation"/>
+						<condition xsi:type="And">
+							<operand xsi:type="IsEmpty">
+								<operand xsi:type="Filter" scope="Inpatient">
+									<source xsi:type="ExpressionRef" name="EncounterPerformedInpatient"/>
+									<condition xsi:type="LessOrEqual">
+										<operand xsi:type="Property" scope="Inpatient" path="effectiveDateTime.low"/>
+										<operand xsi:type="DateAdd">
+											<date xsi:type="Property" scope="ED" path="effectiveDateTime.high"/>
+											<granularity xsi:type="Literal" valueType="DateGranularity" value="Hour"/>
+											<numberOfPeriods xsi:type="IntegerLiteral" value="6"/>
+										</operand>
+									</condition>
+								</operand>
+							</operand>
+							<operand xsi:type="Not">
+								<operand xsi:type="In">
+									<operand xsi:type="Property" scope="ED" path="dischargeStatus"/> <!-- Not sure if this is the way this is represented in vMR? -->
+									<operand xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.666.5.1146" version="20130401"/>
+								</operand>
+							</operand>
+						</condition>
+					</operand>
+				</expression>
+			</logic>
+			<criterionRole value="MeasurePopulation"/>
+		</criterion>
+
+		<criterion>
+			<logic name="Stratum1">
+				<expression xsi:type="ExpressionRef" name="InitialPopulation"/>
+			</logic>
+			<criterionRole value="Stratifier"/>
+		</criterion>
+		
+		<criterion>
+			<logic name="Stratum2">
+				<expression xsi:type="Filter" scope="ED">
+					<source xsi:type="ExpressionRef" name="InitialPopulation"/>
+					<condition xsi:type="IsNotEmpty">
+						<operand xsi:type="Filter" scope="Diagnosis">
+							<source xsi:type="ExpressionRef" name="DiagnosisActiveMentalDisorder"/><!-- WARNING: null reference -->
+
+							<condition xsi:type="In">
+								<operand xsi:type="Property" scope="Diagnosis" path="effectiveTime.low"/>
+								<operand xsi:type="Property" scope="ED" path="effectiveTime"/>
+							</condition>
+						</operand>
+					</condition>
+				</expression>
+			</logic>
+			<criterionRole value="Stratifier"/>
+		</criterion>
+
+		<criterion>
+			<logic name="Stratum3">
+				<expression xsi:type="Filter" scope="ED">
+					<source xsi:type="ExpressionRef" name="InitialPopulation"/>
+					<condition xsi:type="IsNotEmpty">
+						<operand xsi:type="Filter" scope="Transfer">
+							<source xsi:type="ExpressionRef" name="TransferToAcuteCare"/><!-- WARNING: null reference -->
+
+							<condition xsi:type="LessOrEqual">
+								<operand xsi:type="Property" scope="Transfer" path="effectiveTime.low"/>
+								<operand xsi:type="DateAdd">
+									<date xsi:type="Property" scope="ED" path="effectiveTime.high"/>
+									<granularity xsi:type="Literal" valueType="DateGranularity" value="Hour"/>
+									<numberOfPeriods xsi:type="IntegerLiteral" value="6"/>
+								</operand>
+							</condition>
+						</operand>
+					</condition>
+				</expression>
+			</logic>
+			<criterionRole value="Stratifier"/>
+		</criterion>
+
+		<criterion>
+			<logic name="Stratum4">
+				<expression xsi:type="Filter" scope="ED">
+					<source xsi:type="ExpressionRef" name="InitialPopulation"/>
+					<condition xsi:type="And">
+						<operand xsi:type="IsEmpty">
+							<operand xsi:type="Filter" scope="Diagnosis">
+								<source xsi:type="ExpressionRef" name="DiagnosisActiveMentalDisorder"/><!-- WARNING: null reference -->
+								<condition xsi:type="In">
+									<operand xsi:type="Property" scope="Diagnosis" path="effectiveTime.low"/>
+									<operand xsi:type="Property" scope="ED" path="effectiveTime"/>
+								</condition>
+							</operand>
+						</operand>
+						<operand xsi:type="IsEmpty">
+							<operand xsi:type="Filter" scope="Transfer">
+								<source xsi:type="ExpressionRef" name="TransferToAcuteCare"/><!-- WARNING: null reference -->
+								<condition xsi:type="LessOrEqual">
+									<operand xsi:type="Property" scope="Transfer" path="effectiveTime.low"/>
+									<operand xsi:type="DateAdd">
+										<date xsi:type="Property" scope="ED" path="effectiveTime.high"/>
+										<granularity xsi:type="Literal" valueType="DateGranularity" value="Hour"/>
+										<numberOfPeriods xsi:type="IntegerLiteral" value="6"/>
+									</operand>
+								</condition>
+							</operand>
+						</operand>
+					</condition>
+				</expression>
+			</logic>
+			<criterionRole value="Stratifier"/>
+		</criterion>
+
+	</criteria>
+	
+	<measureObservation name="LengthOfStay">
+		<expression xsi:type="ForEach">
+			<source xsi:type="ExpressionRef" name="MeasurePopulation"/>
+			<element xsi:type="Subtract">
+				<operand xsi:type="Property" path="effectiveDateTime.high"/>
+				<operand xsi:type="Property" path="effectiveDateTime.low"/>
+			</element>
+		</expression>
+	</measureObservation>
+	
+	<!-- Note that because the measure is built with Patient as the subject, there may be multiple LengthOfStay values for each patient,
+	so the Expand operator is used to "flatten" the list of lists into a single list for the purposes of the final Median calculation.
+	The measure could also be expressed with the Encounter as subject which would avoid this need, but would make the stratifier and measure
+	population criteria more complex to express.
+	 -->
+	
+	<measureScore xsi:type="Median">
+		<source xsi:type="Expand">
+			<operand xsi:type="ExpressionRef" name="LengthOfStay"/>
+		</source>
+	</measureScore>
+
+</measureDocument>
+

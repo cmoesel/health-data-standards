@@ -1,0 +1,1438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<measureDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:hl7-org:knowledgeartifact:r1 ../schema/qualitymeasure/measuredocument.xsd"
+	xmlns="urn:hl7-org:knowledgeartifact:r1"  xmlns:vmr="urn:hl7-org:vmr:r2"
+	xmlns:dt="urn:hl7-org:cdsdt:r2">
+	<metadata>
+		<identifiers>
+			<identifier root="CMS117" version="2"/>
+		</identifiers>
+		<artifactType value="Measure" />
+		<schemaIdentifier root="urn:hl7-org:v3:knowledgeartifact:r1"
+			version="1" />
+		<dataModels>
+			<modelReference>
+				<description value="Virtual Medical Record model" />
+				<referencedModel value="urn:hl7-org:vmr:r2" />
+			</modelReference>
+		</dataModels>
+		<title value="Childhood Immunization Status" />
+		<relatedResources>
+			<relatedResource>
+				<relationship value="DerivedFrom" />
+				<resources>
+					<resource>
+						<title
+							value="Childhood Immunization Status" />
+						<location
+							value="http://ushik.ahrq.gov/ViewItemDetails?&amp;system=mu&amp;itemKey=161239000" />
+					</resource>
+				</resources>
+			</relatedResource>
+		</relatedResources>
+		<!-- TODO
+		<supportingEvidence>
+			<evidence></evidence>
+		</supportingEvidence>
+		-->
+		<!-- TODO
+		<applicability>
+			<coverage>
+				<focus value=""></focus>
+			</coverage>
+		</applicability>
+		-->
+		<status value="Draft" />
+		<contributions>
+			<contribution>
+				<contributor xsi:type="Person">
+					<contacts>
+						<contact value="mailto:bryn@veracitysolutions.com"/>
+					</contacts>
+					<name use="C">
+						<dt:part value="Bryn" type="GIV"/>
+						<dt:part value="Rhodes" type="FAM"/>
+					</name>
+				</contributor>
+				<role value="Author"/>
+			</contribution>
+		</contributions>
+	</metadata>
+
+	<measureType value="Proportion"/>
+	
+	<externalData>
+	
+		<!-- Measure Period is specified as a parameter with a default to allow the measure period to be provided as data to the artifact. This parameter is then referenced as the MeasurePeriod component below. -->
+		
+		<parameter name="MeasurePeriod" parameterType="IVL_TS">
+			<default xsi:type="TimestampIntervalLiteral" highClosed="false">
+				<low value="20130101"/>
+				<high value="20140101"/>
+			</default>
+		</parameter>
+		
+		<!-- Patient is identified as the measure subject below. All other external data requests are linked to this subject via the subjectProperty. -->
+
+		<def name="Patient">
+			<expression xsi:type="ClinicalRequest" cardinality="Single" dataType="vmr:Patient"/>
+		</def>
+		
+		<def name="EncounterPerformedOfficeVisit">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Encounter" codeProperty="encounterCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.101.12.1001" version="20130614"/>
+				<dateRange xsi:type="ExpressionRef" name="MeasurePeriod"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+
+		<!-- Note that although these could all be combined in to the same EncounterPerformed section by combining all the value sets, part of the value of
+			using the ClinicalRequest mechanism is that the engine could also perform this combination automatically. -->
+		<def name="EncounterPerformedFaceToFace">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Encounter" codeProperty="encounterCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.101.12.1048" version="20130614"/>
+				<dateRange xsi:type="ExpressionRef" name="MeasurePeriod"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="EncounterPerformedHomeHealthCareServices">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Encounter" codeProperty="encounterCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.101.12.1016" version="20130614"/>
+				<dateRange xsi:type="ExpressionRef" name="MeasurePeriod"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="EncounterPerformedPreventiveCareEstablishedOfficeVisit0To17">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Encounter" codeProperty="encounterCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.101.12.1024" version="20130614"/>
+				<dateRange xsi:type="ExpressionRef" name="MeasurePeriod"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="EncounterPerformedPreventiveCareInitialOfficeVisit0To17">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Encounter" codeProperty="encounterCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.101.12.1022" version="20130614"/>
+				<dateRange xsi:type="ExpressionRef" name="MeasurePeriod"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="DTaPVaccineSubstanceAdministration">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:SubstanceAdministration" codeProperty="substanceAdministrationGeneralPurpose" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.196.12.1214" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="DTaPVaccineProcedure">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Procedure" codeProperty="procedureCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.110.12.1022" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="DTaPVaccineAllergy">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.199.12.1031" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="EncephalopathyDiagnosis">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.114.12.1007" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="PolioVaccineSubstanceAdministration">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:SubstanceAdministration" codeProperty="substanceAdministrationGeneralPurpose" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.196.12.1219" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="PolioVaccineProcedure">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Procedure" codeProperty="procedureCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.110.12.1045" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="PolioVaccineAllergy">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.199.12.1023" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="StreptomycinAllergy">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.199.12.1028" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="PolymyxinAllergy">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.199.12.1025" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="NeomycinAllergy">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.199.12.1024" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="MMRVaccineSubstanceAdministration">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:SubstanceAdministration" codeProperty="substanceAdministrationGeneralPurpose" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.196.12.1224" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="MMRVaccineProcedure">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Procedure" codeProperty="procedureCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.110.12.1031" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="ImmuneSystemDisorderDiagnosis">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.120.12.1001" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="HIVDiagnosis">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.120.12.1003" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="MalignantNeoplasmOfLymphaticTissueDiagnosis">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.108.12.1021" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="MeaslesDiagnosis">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.110.12.1053" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="MeaslesAntigenLabResult">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:ObservationResult" codeProperty="observationFocus" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.198.12.1029" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="MumpsDiagnosis">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.110.12.1032" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+
+		<def name="MumpsAntigenLabResult">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:ObservationResult" codeProperty="observationFocus" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.198.12.1028" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="RubellaDiagnosis">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.110.12.1037" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="RubellaAntigenLabResult">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:ObservationResult" codeProperty="observationFocus" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.198.12.1030" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="HiBVaccineSubstanceAdministration">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:SubstanceAdministration" codeProperty="substanceAdministrationGeneralPurpose" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.196.12.1217" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="HiBVaccineProcedure">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Procedure" codeProperty="procedureCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.110.12.1043" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="HiBVaccineAllergy">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.199.12.1030" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+
+		<def name="HepatitisBVaccineSubstanceAdministration">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:SubstanceAdministration" codeProperty="substanceAdministrationGeneralPurpose" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.196.12.1216" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="HepatitisBVaccineProcedure">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Procedure" codeProperty="procedureCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.110.12.1042" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="HepatitisBDiagnosis">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.110.12.1025" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="HepatitisBAntigenLabResult">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:ObservationResult" codeProperty="observationFocus" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.198.12.1031" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="HepatitisBVaccineAllergy">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.199.12.1029" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="BakersYeastAllergy">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.199.12.1032" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+
+		<def name="HepatitisAVaccineSubstanceAdministration">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:SubstanceAdministration" codeProperty="substanceAdministrationGeneralPurpose" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.196.12.1215" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+
+		<def name="HepatitisAVaccineProcedure">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Procedure" codeProperty="procedureCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.110.12.1041" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="HepatitisADiagnosis">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.110.12.1024" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="HepatitisAAntigenLabResult">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:ObservationResult" codeProperty="observationFocus" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.198.12.1033" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="HepatitisAVaccineAllergy">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.199.12.1026" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+
+		<def name="InfluenzaVaccineSubstanceAdministration">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:SubstanceAdministration" codeProperty="substanceAdministrationGeneralPurpose" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.196.12.1218" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="InfluenzaVaccineProcedure">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Procedure" codeProperty="procedureCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.110.12.1044" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="InfluenzaVaccineAllergy">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.199.12.1022" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+
+		<def name="VaricellaZosterVaccineSubstanceAdministration">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:SubstanceAdministration" codeProperty="substanceAdministrationGeneralPurpose" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.196.12.1170" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="VaricellaZosterVaccineProcedure">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Procedure" codeProperty="procedureCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.110.12.1040" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="VaricellaZosterDiagnosis">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.110.12.1039" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="VaricellaZosterAntigenLabResult">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:ObservationResult" codeProperty="observationFocus" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.198.12.1032" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="PneumococcalConjugateVaccineSubstanceAdministration">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:SubstanceAdministration" codeProperty="substanceAdministrationGeneralPurpose" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.196.12.1221" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="PneumococcalConjugateVaccineProcedure">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Procedure" codeProperty="procedureCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.110.12.1046" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="PneumococcalConjugateVaccineAllergy">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.199.12.1027" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+
+		<def name="RotavirusVaccine2DoseScheduleSubstanceAdministration">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:SubstanceAdministration" codeProperty="substanceAdministrationGeneralPurpose" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.196.12.1222" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="RotavirusVaccine2DoseScheduleProcedure">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Procedure" codeProperty="procedureCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.110.12.1048" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="RotavirusVaccine3DoseScheduleSubstanceAdministration">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:SubstanceAdministration" codeProperty="substanceAdministrationGeneralPurpose" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.196.12.1223" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="RotavirusVaccine3DoseScheduleProcedure">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Procedure" codeProperty="procedureCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.110.12.1047" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="RotavirusVaccineAllergy">
+			<expression xsi:type="ClinicalRequest" cardinality="Multiple" dataType="vmr:Problem" codeProperty="problemCode" subjectProperty="evaluatedPersonId">
+				<codes xsi:type="ValueSet" authority="VSAC" id="2.16.840.1.113883.3.464.1003.199.12.1021" version="20130614"/>
+				<subject xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+
+	</externalData>
+
+	<expressions>
+	
+		<def name="PatientBirthDate">
+			<expression xsi:type="Property" path="BirthDate">
+				<source xsi:type="ExpressionRef" name="Patient"/>
+			</expression>
+		</def>
+		
+		<def name="AgeTwoDuringMeasurePeriod">
+			<expression xsi:type="Filter">
+				<description>Patients that reached the age of two during the measurement period.</description>
+				<source xsi:type="ExpressionRef" name="Patient"/>
+				<condition xsi:type="In">
+					<operand xsi:type="DateAdd">
+						<date xsi:type="Property" path="BirthDate"/>
+						<granularity xsi:type="Literal" valueType="DateGranularity" value="year"/>
+						<numberOfPeriods xsi:type="IntegerLiteral" value="2"/>
+					</operand>
+					<operand xsi:type="ExpressionRef" name="MeasurePeriod"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="AgeTwoOrLess">
+			<expression xsi:type="Interval">
+				<begin xsi:type="ExpressionRef" name="PatientBirthDate"/>
+				<end xsi:type="DateAdd">
+					<date xsi:type="ExpressionRef" name="PatientBirthDate"/>
+					<granularity xsi:type="Literal" valueType="DateGranularity" value="Day"/>
+					<numberOfPeriods xsi:type="IntegerLiteral" value="42"/>
+				</end>
+			</expression>
+		</def>
+		
+		<def name="Age42DaysTo2Years">
+			<expression xsi:type="Interval">
+				<begin xsi:type="DateAdd">
+					<date xsi:type="ExpressionRef" name="PatientBirthDate"/>
+					<granularity xsi:type="Literal" valueType="DateGranularity" value="Day"/>
+					<numberOfPeriods xsi:type="IntegerLiteral" value="42"/>
+				</begin>
+				<end xsi:type="DateAdd">
+					<date xsi:type="ExpressionRef" name="PatientBirthDate"/>
+					<granularity xsi:type="Literal" valueType="DateGranularity" value="Year"/>
+					<numberOfPeriods xsi:type="IntegerLiteral" value="2"/>
+				</end>
+			</expression>
+		</def>
+		
+		<def name="Age180DaysTo2Years">
+			<expression xsi:type="Interval">
+				<begin xsi:type="DateAdd">
+					<date xsi:type="ExpressionRef" name="PatientBirthDate"/>
+					<granularity xsi:type="Literal" valueType="DateGranularity" value="Day"/>
+					<numberOfPeriods xsi:type="IntegerLiteral" value="180"/>
+				</begin>
+				<end xsi:type="DateAdd">
+					<date xsi:type="ExpressionRef" name="PatientBirthDate"/>
+					<granularity xsi:type="Literal" valueType="DateGranularity" value="Year"/>
+					<numberOfPeriods xsi:type="IntegerLiteral" value="2"/>
+				</end>
+			</expression>
+		</def>
+
+		<def name="AtLeast4DTaPVaccineEvents">
+			<expression xsi:type="GreaterOrEqual">
+				<description>4 or more counts of "Medication administered: DTaP vaccine", different dates, occurring &gt;= 42 days and &lt; 2 years after "Patient characteristic: birth date", excluding "Medication allergy: DTaP vaccine";"Diagnosis active: encephalopathy";"Diagnosis active: progressive neurological disorder"</description>
+				<operand xsi:type="Count">
+					<description>The number of unique dates on which the patient had a DTaP vaccine administration or procedure.</description>
+					<source xsi:type="Distinct">
+						<description>The result of this Distinct will be the unique dates on which the patient had a DTaP vaccine administration or procedure.</description>
+						<source xsi:type="Union">
+							<description>The result of this Union will be all dates on which the patient had a DTap vaccine administration or procedure.</description>
+							<operand xsi:type="ForEach">
+								<description>The result of this ForEach will be a list of Dates on which the patient had a DTaP vaccine administration.</description>
+								<source xsi:type="Filter">
+									<source xsi:type="ExpressionRef" name="DTaPVaccineSubstanceAdministration"/>
+									<condition xsi:type="In">
+										<operand xsi:type="Property" path="AdministrationDateTime.low"/>
+										<operand xsi:type="ExpressionRef" name="Age42DaysTo2Years"/>
+									</condition>
+								</source>
+								<element xsi:type="DateOf">
+									<operand xsi:type="Property" path="AdministrationDateTime.low"/>
+								</element>
+							</operand>
+							<operand xsi:type="ForEach">
+								<description>The result of this ForEach will be a list of Dates on which the patient had a DTaP vaccine procedure.</description>
+								<source xsi:type="Filter">
+									<source xsi:type="ExpressionRef" name="DTaPVaccineProcedure"/>
+									<condition xsi:type="In">
+										<operand xsi:type="Property" path="ProcedureDateTime.low"/>
+										<operand xsi:type="ExpressionRef" name="Age24DaysTo2Years"/>
+									</condition>
+								</source>
+								<element xsi:type="DateOf">
+									<operand xsi:type="Property" path="ProcedureDateTime.low"/>
+								</element>
+							</operand>
+						</source>
+					</source>
+				</operand>
+				<operand xsi:type="IntegerLiteral" value="4"/>
+			</expression>
+		</def>
+		
+		<def name="ActiveDTaPVaccineAllergy">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="DTaPVaccineAllergy"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="ActiveEncephalopathyDiagnosis">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="EncephalopathyDiagnosis"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="DTaPVaccineNumerator">
+			<expression xsi:type="AnyOf">
+				<operand xsi:type="ExpressionRef" name="AtLeast4DTaPVaccineEvents"/>
+				<operand xsi:type="ExpressionRef" name="ActiveDTaPVaccineAllergy"/>
+				<operand xsi:type="ExpressionRef" name="ActiveEncephalopathyDiagnosis"/>
+			</expression>
+		</def>
+		
+		<def name="AtLeast3PolioVaccineEvents">
+			<expression xsi:type="GreaterOrEqual">
+				<description>3 or more counts of "Medication administered: Inactivated Polio Vaccine (IPV)", different dates, occurring &gt;= 42 days and &lt; 2 years after "Patient characteristic: birth date", excluding "Medication allergy: Inactivated Polio Vaccine (IPV)";"Medication allergy: Streptomycin";"Medication allergy: Polymyxin";"Medication allergy: Neomycin"</description>
+				<operand xsi:type="Count">
+					<source xsi:type="Distinct">
+						<source xsi:type="Union">
+							<operand xsi:type="ForEach">
+								<source xsi:type="Filter">
+									<source xsi:type="ExpressionRef" name="PolioVaccineSubstanceAdministration"/>
+									<condition xsi:type="In">
+										<operand xsi:type="Property" path="AdministrationDateTime.low"/>
+										<operand xsi:type="ExpressionRef" name="Age42DaysTo2Years"/>
+									</condition>
+								</source>
+								<element xsi:type="DateOf">
+									<operand xsi:type="Property" path="AdministrationDateTime.low"/>
+								</element>
+							</operand>
+							<operand xsi:type="ForEach">
+								<source xsi:type="Filter">
+									<source xsi:type="ExpressionRef" name="PolioVaccineProcedure"/>
+									<condition xsi:type="In">
+										<operand xsi:type="Property" path="ProcedureDateTime.low"/>
+										<operand xsi:type="ExpressionRef" name="Age24DaysTo2Years"/>
+									</condition>
+								</source>
+								<element xsi:type="DateOf">
+									<operand xsi:type="Property" path="ProcedureDateTime.low"/>
+								</element>
+							</operand>
+						</source>
+					</source>
+				</operand>
+				<operand xsi:type="IntegerLiteral" value="3"/>
+			</expression>
+		</def>
+		
+		<def name="ActivePolioVaccineAllergy">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="PolioVaccineAllergy"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="ActiveStreptomycinAllergy">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="StreptomycinAllergy"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="ActiveNeomycinAllergy">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="NeomycinAllergy"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="ActivePolymyxinAllergy">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="PolymyxinAllergy"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="PolioVaccineNumerator">
+			<expression xsi:type="AnyOf">
+				<operand xsi:type="ExpressionRef" name="AtLeast3PolioVaccineEvents"/>
+				<operand xsi:type="ExpressionRef" name="ActivePolioVaccineAllergy"/>
+				<operand xsi:type="ExpressionRef" name="ActiveStreptomycinAllergy"/>
+				<operand xsi:type="ExpressionRef" name="ActivePolymyxinAllergy"/>
+				<operand xsi:type="ExpressionRef" name="ActiveNeomycinAllergy"/>
+			</expression>
+		</def>
+		
+		<def name="AtLeast1MMRVaccineEvent">
+			<expression xsi:type="AnyOf">
+				<operand xsi:type="Filter">
+					<source xsi:type="ExpressionRef" name="MMRVaccineAdministration"/>
+					<condition xsi:type="In">
+						<operand xsi:type="Property" path="administrationDateTime.low"/>
+						<operand xsi:type="ExpressionRef" name="AgeTwoOrLess"/>
+					</condition>
+				</operand>
+				<operand xsi:type="Filter">
+					<source xsi:type="ExpressionRef" name="MMRVaccineProcedure"/>
+					<condition xsi:type="In">
+						<operand xsi:type="Property" path="procedureDateTime.low"/>
+						<operand xsi:type="ExpressionRef" name="AgeTwoOrLess"/>
+					</condition>
+				</operand>
+			</expression>
+		</def>
+
+		<def name="ActiveImmuneSystemDisorderDiagnosis">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="ImmuneSystemDisorderDiagnosis"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="ActiveHIVDiagnosis">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="HIVDiagnosis"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="ActiveMalignantNeoplasmOfLymphaticTissueDiagnosis">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="MalignantNeoplasmOfLymphaticTissueDiagnosis"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="ActiveMeaslesDiagnosis">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="MeaslesDiagnosis"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="ResolvedMeaslesDiagnosis">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="MeaslesDiagnosis"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Resolved"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="PositiveMeaslesAntigenLabResult">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="MeaslesAntigenLabResult"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="observationValue"/>
+					<operand xsi:type="StringLiteral" value="seropositive"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="ActiveMumpsDiagnosis">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="MumpsDiagnosis"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="ResolvedMumpsDiagnosis">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="MumpsDiagnosis"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Resolved"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="PositiveMumpsAntigenLabResult">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="MumpsAntigenLabResult"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="observationValue"/>
+					<operand xsi:type="StringLiteral" value="seropositive"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="ActiveRubellaDiagnosis">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="RubellaDiagnosis"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="ResolvedRubellaDiagnosis">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="RubellaDiagnosis"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Resolved"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="PositiveRubellaAntigenLabResult">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="RubellaAntigenLabResult"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="observationValue"/>
+					<operand xsi:type="StringLiteral" value="seropositive"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="MMRVaccineNumerator">
+			<expression xsi:type="AnyOf">
+				<operand xsi:type="ExpressionRef" name="AtLeast1MMRVaccineEvent"/>
+				<operand xsi:type="ExpressionRef" name="ActiveImmuneSystemDisorderDiagnosis"/> 
+				<operand xsi:type="ExpressionRef" name="ActiveHIVDiagnosis"/> 
+				<operand xsi:type="ExpressionRef" name="ActiveMalignantNeoplasmOfLymphaticTissueDiagnosis"/> 
+				<operand xsi:type="ExpressionRef" name="ActiveNeomycinAllergy"/> 
+				<operand xsi:type="AllOf">
+					<operand xsi:type="AnyOf">
+						<operand xsi:type="ExpressionRef" name="ActiveMeaslesDiagnosis"/>
+						<operand xsi:type="ExpressionRef" name="ResolvedMeaslesDiagnosis"/>
+						<operand xsi:type="ExpressionRef" name="PositiveMeaslesAntigenLabResult"/>
+					</operand>
+					<operand xsi:type="AnyOf">
+						<operand xsi:type="ExpressionRef" name="ActiveMumpsDiagnosis"/>
+						<operand xsi:type="ExpressionRef" name="ResolvedMumpsDiagnosis"/>
+						<operand xsi:type="ExpressionRef" name="PositiveMumpsAntigenLabResult"/>
+					</operand>
+					<operand xsi:type="AnyOf">
+						<operand xsi:type="ExpressionRef" name="ActiveRubellaDiagnosis"/>
+						<operand xsi:type="ExpressionRef" name="ResolvedRubellaDiagnosis"/>
+						<operand xsi:type="ExpressionRef" name="PositiveRubellaAntigenLabResult"/>
+					</operand>
+				</operand>
+			</expression>
+		</def>
+		
+		<def name="AtLeast3HiBVaccineEvents">
+			<expression xsi:type="GreaterOrEqual">
+				<operand xsi:type="Count">
+					<source xsi:type="Distinct">
+						<source xsi:type="Union">
+							<operand xsi:type="ForEach">
+								<source xsi:type="Filter">
+									<source xsi:type="ExpressionRef" name="HiBVaccineSubstanceAdministration"/>
+									<condition xsi:type="In">
+										<operand xsi:type="Property" path="administrationDateTime.low"/>
+										<operand xsi:type="ExpressionRef" name="Age42DaysTo2Years"/>
+									</condition>
+								</source>
+								<element xsi:type="DateOf">
+									<operand xsi:type="Property" path="administrationDateTime.low"/>
+								</element>
+							</operand>
+							<operand xsi:type="ForEach">
+								<source xsi:type="Filter">
+									<source xsi:type="ExpressionRef" name="HiBVaccineProcedure"/>
+									<condition xsi:type="In">
+										<operand xsi:type="Property" path="procedureDateTime.low"/>
+										<operand xsi:type="ExpressionRef" name="Age42DaysTo2Years"/>
+									</condition>
+								</source>
+								<element xsi:type="DateOf">
+									<operand xsi:type="Property" path="procedureDateTime.low"/>
+								</element>
+							</operand>
+						</source>
+					</source>
+				</operand>
+				<operand xsi:type="IntegerLiteral" value="3"/>
+			</expression>
+		</def>
+		
+		<def name="ActiveHiBVaccineAllergy">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="HiBVaccineAllergy"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="HiBVaccineNumerator">
+			<expression xsi:type="AnyOf">
+				<operand xsi:type="ExpressionRef" name="ActiveHiBVaccineAllergy"/>
+				<operand xsi:type="ExpressionRef" name="AtLeast3HiBVaccineEvents"/>
+			</expression>
+		</def>
+		
+		<def name="AtLeast3HepatitisBVaccineEvents">
+			<expression xsi:type="GreaterOrEqual">
+				<operand xsi:type="Count">
+					<source xsi:type="Distinct">
+						<source xsi:type="Union">
+							<operand xsi:type="ForEach">
+								<source xsi:type="Filter">
+									<source xsi:type="ExpressionRef" name="HepatitisBVaccineSubstanceAdministration"/>
+									<condition xsi:type="In">
+										<operand xsi:type="Property" path="administrationDateTime.low"/>
+										<operand xsi:type="ExpressionRef" name="AgeTwoOrLess"/>
+									</condition>
+								</source>
+								<element xsi:type="DateOf">
+									<operand xsi:type="Property" path="administrationDateTime.low"/>
+								</element>
+							</operand>
+							<operand xsi:type="ForEach">
+								<source xsi:type="Filter">
+									<source xsi:type="ExpressionRef" name="HepatitisBVaccineProcedure"/>
+									<condition xsi:type="In">
+										<operand xsi:type="Property" path="procedureDateTime.low"/>
+										<operand xsi:type="ExpressionRef" name="AgeTwoOrLess"/>
+									</condition>
+								</source>
+								<element xsi:type="DateOf">
+									<operand xsi:type="Property" path="procedureDateTime.low"/>
+								</element>
+							</operand>
+						</source>
+					</source>
+				</operand>
+				<operand xsi:type="IntegerLiteral" value="3"/>
+			</expression>
+		</def>
+		
+		<def name="ActiveHepatitisBVaccineAllergy">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="HepatitisBVaccineAllergy"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="ActiveBakersYeastAllergy">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="BakersYeastAllergy"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="ActiveHepatitisBDiagnosis">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="HepatitisBDiagnosis"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="InactiveHepatitisBDiagnosis">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="HepatitisBDiagnosis"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Inactive"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="PositiveHepatitisBAntigenLabResult">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="HepatitisBAntigenLabResult"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="observationValue"/>
+					<operand xsi:type="StringLiteral" value="seropositive"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="HepatitisBVaccineNumerator">
+			<expression xsi:type="AnyOf">
+				<operand xsi:type="ExpressionRef" name="AtLeast3HepatitisBVaccineEvents"/>
+				<operand xsi:type="ExpressionRef" name="ActiveHepatitisBVaccineAllergy"/>
+				<operand xsi:type="ExpressionRef" name="ActiveBakersYeastAllergy"/>
+				<operand xsi:type="ExpressionRef" name="ActiveHepatitisBDiagnosis"/>
+				<operand xsi:type="ExpressionRef" name="InactiveHepatitisBDiagnosis"/>
+				<operand xsi:type="ExpressionRef" name="PositiveHepatitisBAntigenLabResult"/>
+			</expression>
+		</def>
+		
+		<def name="AtLeast1VaricellaZosterVaccineEvent">
+			<expression xsi:type="AnyOf">
+				<operand xsi:type="Filter">
+					<source xsi:type="ExpressionRef" name="VaricellaZosterVaccineAdministration"/>
+					<condition xsi:type="In">
+						<operand xsi:type="Property" path="administrationDateTime.low"/>
+						<operand xsi:type="ExpressionRef" name="AgeTwoOrLess"/>
+					</condition>
+				</operand>
+				<operand xsi:type="Filter">
+					<source xsi:type="ExpressionRef" name="VaricellaZosterVaccineProcedure"/>
+					<condition xsi:type="In">
+						<operand xsi:type="Property" path="procedureDateTime.low"/>
+						<operand xsi:type="ExpressionRef" name="AgeTwoOrLess"/>
+					</condition>
+				</operand>
+			</expression>
+		</def>
+		
+		<def name="ActiveVaricellaZosterDiagnosis">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="VaricellaZosterDiagnosis"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="InactiveVaricellaZosterDiagnosis">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="VaricellaZosterDiagnosis"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Inactive"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="ResolvedVaricellaZosterDiagnosis">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="VaricellaZosterDiagnosis"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Resolved"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="PositiveVaricellaZosterAntigenLabResult">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="VaricellaZosterAntigenLabResult"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="observationValue"/>
+					<operand xsi:type="StringLiteral" value="seropositive"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="VaricellaZosterVaccineNumerator">
+			<expression xsi:type="AnyOf">
+				<operand xsi:type="ExpressionRef" name="AtLeast1VaricellaZosterVaccineEvent"/>
+				<operand xsi:type="ExpressionRef" name="ActiveImmuneSystemDisorderDiagnosis"/> 
+				<operand xsi:type="ExpressionRef" name="ActiveHIVDiagnosis"/> 
+				<operand xsi:type="ExpressionRef" name="ActiveMalignantNeoplasmOfLymphaticTissueDiagnosis"/> 
+				<operand xsi:type="ExpressionRef" name="ActiveNeomycinAllergy"/> 
+				<operand xsi:type="ExpressionRef" name="ActiveVaricellaZosterDiagnosis"/>
+				<operand xsi:type="ExpressionRef" name="InactiveVaricellaZosterDiagnosis"/>
+				<operand xsi:type="ExpressionRef" name="ResolvedVaricellaZosterDiagnosis"/>
+				<operand xsi:type="ExpressionRef" name="PositiveVaricellaZosterAntigenLabResult"/>
+			</expression>
+		</def>
+		
+		<def name="ActiveHepatitisBVaccineAllergy">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="HepatitisBVaccineAllergy"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="ActivePCVAllergy">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="PCVAllergies"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="AtLeast4PneumococcalConjugateVaccineEvents">
+			<expression xsi:type="GreaterOrEqual">
+				<operand xsi:type="Count">
+					<source xsi:type="Distinct">
+						<source xsi:type="Union">
+							<operand xsi:type="ForEach">
+								<source xsi:type="Filter">
+									<source xsi:type="ExpressionRef" name="PneumococcalConjugateVaccineSubstanceAdministration"/>
+									<condition xsi:type="In">
+										<operand xsi:type="Property" path="administrationDateTime.low"/>
+										<operand xsi:type="ExpressionRef" name="Age42DaysTo2Years"/>
+									</condition>
+								</source>
+								<element xsi:type="DateOf">
+									<operand xsi:type="Property" path="administrationDateTime.low"/>
+								</element>
+							</operand>
+							<operand xsi:type="ForEach">
+								<source xsi:type="Filter">
+									<source xsi:type="ExpressionRef" name="PneumococcalConjugateVaccineProcedure"/>
+									<condition xsi:type="In">
+										<operand xsi:type="Property" path="procedureDateTime.low"/>
+										<operand xsi:type="ExpressionRef" name="Age42DaysTo2Years"/>
+									</condition>
+								</source>
+								<element xsi:type="DateOf">
+									<operand xsi:type="Property" path="procedureDateTime.low"/>
+								</element>
+							</operand>
+						</source>
+					</source>
+				</operand>
+				<operand xsi:type="IntegerLiteral" value="4"/>
+			</expression>
+		</def>
+		
+		<def name="PneumococcalConjugateVaccineNumerator">
+			<expression xsi:type="AnyOf">
+				<operand xsi:type="ExpressionRef" name="ActivePneumococcalConjugateVaccineAllergy"/>
+				<operand xsi:type="ExpressionRef" name="AtLeast4PneumococcalConjugateVaccineEvents"/>
+			</expression>
+		</def>
+		
+		<def name="AtLeast1HepatitisAVaccineEvent">
+			<expression xsi:type="AnyOf">
+				<operand xsi:type="Filter">
+					<operand xsi:type="ExpressionRef" name="HepatitisAVaccineSubstanceAdministration"/>
+					<condition xsi:type="In">
+						<operand xsi:type="Property" path="administrationDateTime.low"/>
+						<operand xsi:type="ExpressionRef" name="AgeTwoOrLess"/>
+					</condition>
+				</operand>
+				<operand xsi:type="Filter">
+					<source xsi:type="ExpressionRef" name="HepatitisAVaccineProcedure"/>
+					<condition xsi:type="In">
+						<operand xsi:type="Property" path="procedureDateTime.Low"/>
+						<operand xsi:type="ExpressionRef" name="AgeTwoOrLess"/>
+					</condition>
+				</operand>
+			</expression>
+		</def>
+		
+		<def name="ActiveHepatitisAVaccineAllergy">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="HepatitisAVaccineAllergy"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="ActiveHepatitisADiagnosis">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="HepatitisADiagnosis"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="ResolvedHepatitisADiagnosis">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="HepatitisADiagnosis"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Resolved"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="PositiveHepatitisAAntigenLabResult">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="HepatitisAAntigenLabResult"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="observationValue"/>
+					<operand xsi:type="StringLiteral" value="seropositive"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="HepatitisAVaccineNumerator">
+			<expression xsi:type="AnyOf">
+				<operand xsi:type="ExpressionRef" name="AtLeastOneHepatitisAVaccineEvent"/>
+				<operand xsi:type="ExpressionRef" name="ActiveHepatitisAVaccineAllergy"/>
+				<operand xsi:type="ExpressionRef" name="ActiveHepatitisADiagnosis"/>
+				<operand xsi:type="ExpressionRef" name="ResolvedHepatitisADiagnosis"/>
+				<operand xsi:type="ExpressionRef" name="PositiveHepatitisAAntigenLabResult"/>
+			</expression>
+		</def>
+		
+		<def name="AtLeast2RotavirusVaccineEvents_2DoseSchedule">
+			<expression xsi:type="GreaterOrEqual">
+				<operand xsi:type="Count">
+					<source xsi:type="Distinct">
+						<source xsi:type="Union">
+							<operand xsi:type="ForEach">
+								<source xsi:type="Filter">
+									<source xsi:type="ExpressionRef" name="RotavirusVaccine2DoseScheduleSubstanceAdministration"/>
+									<condition xsi:type="In">
+										<operand xsi:type="Property" path="administrationDateTime.low"/>
+										<operand xsi:type="ExpressionRef" name="Age42DaysTo2Years"/>
+									</condition>
+								</source>
+								<element xsi:type="DateOf">
+									<operand xsi:type="Property" path="administrationDateTime.low"/>
+								</element>
+							</operand>
+							<operand xsi:type="ForEach">
+								<source xsi:type="Filter">
+									<source xsi:type="ExpressionRef" name="RotavirusVaccine2DoseScheduleProcedure"/>
+									<condition xsi:type="In">
+										<operand xsi:type="Property" path="procedureDateTime.low"/>
+										<operand xsi:type="ExpressionRef" name="Age42DaysTo2Years"/>
+									</condition>
+								</source>
+								<element xsi:type="DateOf">
+									<operand xsi:type="Property" path="procedureDateTime.low"/>
+								</element>
+							</operand>
+						</source>
+					</source>
+				</operand>
+				<operand xsi:type="IntegerLiteral" value="2"/>
+			</expression>
+		</def>
+		
+		<def name="AtLeast3RotavirusVaccineEvents_3DoseSchedule">
+			<expression xsi:type="GreaterOrEqual">
+				<operand xsi:type="Count">
+					<source xsi:type="Distinct">
+						<source xsi:type="Union">
+							<operand xsi:type="ForEach">
+								<source xsi:type="Filter">
+									<source xsi:type="ExpressionRef" name="RotavirusVaccine3DoseScheduleSubstanceAdministration"/>
+									<condition xsi:type="In">
+										<operand xsi:type="Property" path="administrationDateTime.low"/>
+										<operand xsi:type="ExpressionRef" name="Age42DaysTo2Years"/>
+									</condition>
+								</source>
+								<element xsi:type="DateOf">
+									<operand xsi:type="Property" path="administrationDateTime.low"/>
+								</element>
+							</operand>
+							<operand xsi:type="ForEach">
+								<source xsi:type="Filter">
+									<source xsi:type="ExpressionRef" name="RotavirusVaccine3DoseScheduleProcedure"/>
+									<condition xsi:type="In">
+										<operand xsi:type="Property" path="procedureDateTime.low"/>
+										<operand xsi:type="ExpressionRef" name="Age42DaysTo2Years"/>
+									</condition>
+								</source>
+								<element xsi:type="DateOf">
+									<operand xsi:type="Property" path="procedureDateTime.low"/>
+								</element>
+							</operand>
+						</source>
+					</source>
+				</operand>
+				<operand xsi:type="IntegerLiteral" value="3"/>
+			</expression>
+		</def>
+		
+		<def name="ActiveRotavirusVaccineAllergy">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="RotavirusVaccineAllergy"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="RotavirusVaccineNumerator">
+			<expression xsi:type="AnyOf">
+				<operand xsi:type="ExpressionRef" name="ActiveRotavirusVaccineAllergy"/>
+				<operand xsi:type="ExpressionRef" name="AtLeast2RotavirusVaccineEvents_2DoseSchedule"/>
+				<operand xsi:type="ExpressionRef" name="AtLeast3RotavirusVaccineEvents_3DoseSchedule"/>
+			</expression>
+		</def>
+		
+		<def name="AtLeast2InfluenzaVaccineEvents">
+			<expression xsi:type="GreaterOrEqual">
+				<operand xsi:type="Count">
+					<source xsi:type="Distinct">
+						<source xsi:type="Union">
+							<operand xsi:type="ForEach">
+								<source xsi:type="Filter">
+									<source xsi:type="ExpressionRef" name="InfluenzaVaccineSubstanceAdministration"/>
+									<condition xsi:type="In">
+										<operand xsi:type="Property" path="administrationDateTime.low"/>
+										<operand xsi:type="ExpressionRef" name="Age180DaysTo2Years"/>
+									</condition>
+								</source>
+								<element xsi:type="DateOf">
+									<operand xsi:type="Property" path="administrationDateTime.low"/>
+								</element>
+							</operand>
+							<operand xsi:type="ForEach">
+								<source xsi:type="Filter">
+									<source xsi:type="ExpressionRef" name="InfluenzaVaccineProcedure"/>
+									<condition xsi:type="In">
+										<operand xsi:type="Property" path="procedureDateTime.low"/>
+										<operand xsi:type="ExpressionRef" name="Age180DaysTo2Years"/>
+									</condition>
+								</source>
+								<element xsi:type="DateOf">
+									<operand xsi:type="Property" path="procedureDateTime.low"/>
+								</element>
+							</operand>
+						</source>
+					</source>
+				</operand>
+				<operand xsi:type="IntegerLiteral" value="2"/>
+			</expression>
+		</def>
+		
+		<def name="ActiveInfluenzaVaccineAllergy">
+			<expression xsi:type="Filter">
+				<source xsi:type="ExpressionRef" name="InfluenzaVaccineAllergy"/>
+				<condition xsi:type="Equal">
+					<operand xsi:type="Property" path="problemStatus"/>
+					<operand xsi:type="StringLiteral" value="Active"/>
+				</condition>
+			</expression>
+		</def>
+		
+		<def name="InfluenzaVaccineNumerator">
+			<expression xsi:type="AnyOf">
+				<operand xsi:type="ExpressionRef" name="AtLeast2InfluenzaVaccineEvents"/>
+				<operand xsi:type="ExpressionRef" name="ActiveInfluenzaVaccineAllergy"/>
+				<operand xsi:type="ExpressionRef" name="ActiveImmuneSystemDisorderDiagnosis"/> 
+				<operand xsi:type="ExpressionRef" name="ActiveHIVDiagnosis"/> 
+				<operand xsi:type="ExpressionRef" name="ActiveMalignantNeoplasmOfLymphaticTissueDiagnosis"/> 
+				<operand xsi:type="ExpressionRef" name="ActiveNeomycinAllergy"/> 
+			</expression>
+		</def>
+
+	</expressions>
+	
+	<measurePeriod name="MeasurePeriod">
+		<expression xsi:type="ParameterRef" name="MeasurePeriod"/>
+	</measurePeriod>
+	
+	<measureSubject name="Subject" subjectId="id">
+		<expression xsi:type="ExpressionRef" name="Patient"/>
+	</measureSubject>
+
+	<criteria>
+		<criterion>
+			<logic name="InitialPopulation">
+				<expression xsi:type="AllOf">
+					<operand xsi:type="ExpressionRef" name="AgeTwoDuringMeasurePeriod"/>
+					<operand xsi:type="AnyOf">
+						<operand xsi:type="ExpressionRef" name="EncounterPerformedOfficeVisit"/>
+						<operand xsi:type="ExpressionRef" name="EncounterPerformedFaceToFace"/>
+						<operand xsi:type="ExpressionRef" name="EncounterPerformedHomeHealthcareServices"/>
+						<operand xsi:type="ExpressionRef" name="EncounterPerformedPreventiveCareEstablishedOfficeVisit0To17"/>
+						<operand xsi:type="ExpressionRef" name="EncounterPerformedPreventiveCareInitialOfficeVisit0To17"/>
+					</operand>
+				</expression>
+			</logic>
+			<criterionRole value="InitialPopulation"/>
+		</criterion>
+
+		<criterion>
+			<logic name="Denominator">
+				<expression xsi:type="ExpressionRef" name="InitialPopulation"/>
+			</logic>
+			<criterionRole value="Denominator"/>
+		</criterion>
+		
+		<!-- NOTE: For this measure, denominator exclusions are actually part of the numerator criteria, not sure if this has relevance for the scoring or not.... 
+
+			It seems to me that it does have a bearing on the scoring calculation, because although the numerator will be the correct size, the denominator will
+			include members of the population that have exclusions for the relevant immunizations. Not sure if that's okay clinically?
+
+		-->
+		
+		<criterion>
+			<logic name="Numerator">
+				<expression xsi:type="AllOf">
+					<operand xsi:type="ExpressionRef" name="DTaPVaccineNumerator"/>
+					<operand xsi:type="ExpressionRef" name="PolioVaccineNumerator"/>
+					<operand xsi:type="ExpressionRef" name="MMRVaccineNumerator"/>
+					<operand xsi:type="ExpressionRef" name="HiBVaccineNumerator"/>
+					<operand xsi:type="ExpressionRef" name="HepatitisBVaccineNumerator"/>
+					<operand xsi:type="ExpressionRef" name="VZVVaccineNumerator"/>
+					<operand xsi:type="ExpressionRef" name="PneumococcalConjugateVaccineNumerator"/>
+					<operand xsi:type="ExpressionRef" name="HepatitisAVaccineNumerator"/>
+					<operand xsi:type="ExpressionRef" name="RotavirusVaccineNumerator"/>
+					<operand xsi:type="ExpressionRef" name="InfluenzaVaccineNumerator"/>
+				</expression>
+			</logic>
+			<criterionRole value="Numerator"/>
+		</criterion>
+		
+	</criteria>
+
+	<!-- Note the implicit use of the Score expression to invoke the full range of the subject. 
+		An engine would need to be aware of this context, so that the expressions invoked within the score
+		would range over the records in the subject as filtered by the Numerator and Denominator (and exclusions if relevant)
+		expressions.
+	-->
+	<measureScore xsi:type="Divide">
+		<operand xsi:type="Count">
+			<source xsi:type="ExpressionRef" name="Numerator"/>
+		</operand>
+		<operand xsi:type="Count">
+			<source xsi:type="ExpressionRef" name="Denominator"/>
+		</operand>
+	</measureScore>
+</measureDocument>
